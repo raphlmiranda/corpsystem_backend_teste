@@ -32,3 +32,5 @@ Projeto desenvolvido para mini ERP.
 * **Cliente:** Validar CPF do cliente.
 * **Produto:** Validar se SKU do produto é único e se há quantidade disponível.
 * **Venda:** Validar se o cliente existe e se há quantidade disponível do produto.
+
+
