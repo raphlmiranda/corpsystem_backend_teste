@@ -1,0 +1,93 @@
+volumes:
+  corpsystem_teste_local_mysql_data: {}
+  corpsystem_teste_local_redis_data: {}
+  corpsystem_teste_local_postgres_data: {}
+  corpsystem_teste_local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: corpsystem_teste_local_django
+    container_name: corpsystem_teste_local_django
+    depends_on:
+      - mysql
+      - redis
+      - postgres
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.mysql
+      - ./.envs/.local/.postgres
+    ports:
+      - '8000:8000'
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: corpsystem_teste_production_postgres
+    container_name: corpsystem_teste_local_postgres
+    volumes:
+      - corpsystem_teste_local_postgres_data:/var/lib/postgresql/data
+      - corpsystem_teste_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+
+  mysql:
+    build:
+      context: .
+      dockerfile: ./compose/production/mysql/Dockerfile
+    image: corpsystem_teste_local_mysql
+    container_name: corpsystem_teste_local_mysql
+    volumes:
+      - corpsystem_teste_local_mysql_data:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        MYSQL_DATABASE: corpsystem_teste
+        MYSQL_USER: mysql
+        MYSQL_PASSWORD: mysql
+    env_file:
+      - ./.envs/.local/.mysql
+    ports:
+      - '3308:3306'
+
+  redis:
+    image: docker.io/redis:6
+    container_name: corpsystem_teste_local_redis
+    
+    volumes:
+      - corpsystem_teste_local_redis_data:/data
+    
+
+  celeryworker:
+    <<: *django
+    image: corpsystem_teste_local_celeryworker
+    container_name: corpsystem_teste_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: corpsystem_teste_local_celerybeat
+    container_name: corpsystem_teste_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: corpsystem_teste_local_flower
+    container_name: corpsystem_teste_local_flower
+    ports:
+      - '5555:5555'
+    command: /start-flower

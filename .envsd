@@ -1,0 +1,5 @@
+MYSQL_HOST=localhost
+MYSQL_PORT=3308
+MYSQL_DB=corpsystem_teste
+MYSQL_USER=mysql
+MYSQL_PASSWORD=mysql
