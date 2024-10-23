@@ -40,7 +40,6 @@ class ProductsViewSet(BaseView):
                 {'sku': "Produto já existe"},
                 status=400
             )
-        print(type(request.data))
         if isinstance(request.data, QueryDict):
             request.data._mutable = True
         request.data['is_active'] = True

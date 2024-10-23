@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('price_total', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('status', models.CharField(max_length=255)),
                 ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='clients.client')),
-                ('product', models.ManyToManyField(to='products.product')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.product')),
                 ('seller', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sellers.seller')),
             ],
             options={

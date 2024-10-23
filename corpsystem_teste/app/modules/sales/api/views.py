@@ -1,9 +1,10 @@
 from typing import Any, List
-from rest_framework.permissions import AllowAny
+from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
-from corpsystem_teste.app.mixins.viewsets import BaseView
+from corpsystem_teste.app.mixins.viewsets import BaseView, ListBaseView
 from corpsystem_teste.app.modules.sales.models import Sale
 from corpsystem_teste.app.modules.products.models import Product
 from corpsystem_teste.app.modules.sellers.models import Seller
@@ -17,15 +18,26 @@ from .serializers import (
 from .actions import SalesActions
 
 
-class SalesViewSet(SalesActions, BaseView):
+class SaleExportView(SalesActions, ListBaseView):
+
+    serializers = {
+        'default': SaleListSerializer,
+    }
+    filterset_fields = ["created_at", "seller", "client"]
+
+    def get_queryset(self) -> List[Sale]:
+        return Sale.objects.all()
+
+
+class SalesViewSet(BaseView):
 
     serializers = {
         'default': SaleListSerializer,
         'retrieve': SaleRetrieveSerializer,
-        'create': SaleCreateSerializer,
-        'export': SaleListSerializer
+        'create': SaleCreateSerializer
     }
     permission_classes = [AllowAny]
+    filterset_fields = ["created_at", "seller", "client"]
 
     def get_queryset(self) -> List[Sale]:
         return Sale.objects.all()
@@ -54,9 +66,12 @@ class SalesViewSet(SalesActions, BaseView):
                 return Response({'message': 'Quantidade maior que o estoque'}, status=400)
             product.quantity -= request.data.get('quantity')
             product.save()
-            request.data._mutable = True
-            request.data['total_price'] = product.price * request.data.get('quantity')
-            request.data._mutable = False
-            return super().create(request, *args, **kwargs)
+
+            validate_data = request.data.copy()
+            validate_data['price_total'] = product.price * request.data.get('quantity')
+            serializer = self.get_serializer(data=validate_data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
             return Response({'message': 'Produto não encontrado'}, status=400)

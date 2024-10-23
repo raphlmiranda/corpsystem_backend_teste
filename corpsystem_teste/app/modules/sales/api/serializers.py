@@ -13,7 +13,7 @@ class SaleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ('id', 'seller', 'client', 'product', 'quantity', 'total_price', 'status', 'created_at', 'updated_at')
+        fields = ('id', 'seller', 'client', 'product', 'quantity', 'price_total', 'status', 'created_at', 'updated_at')
 
 
 class SaleRetrieveSerializer(SaleListSerializer):
@@ -24,7 +24,7 @@ class SaleCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ('seller', 'client', 'product', 'quantity')
+        fields = ('seller', 'client', 'product', 'quantity', 'price_total')
 
 class SaleUpdateSerializer(serializers.ModelSerializer):
 

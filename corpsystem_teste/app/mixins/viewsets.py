@@ -21,3 +21,10 @@ class BaseView(
     BaseViewSet,
 ):
     pass
+
+
+class ListBaseView(
+    mixins.ListModelMixin,
+    BaseViewSet,
+):
+    pass

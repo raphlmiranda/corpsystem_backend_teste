@@ -22,7 +22,7 @@ class SalesActions:
     def __export_to_pdf(self, sales: List[Sale]) -> HttpResponse:
         data = []
         for sale in sales:
-            data.append([sale.id, sale.seller, sale.client, sale.product, sale.quantity, sale.total_price, sale.status, sale.created_at, sale.updated_at])
+            data.append([sale.id, sale.seller, sale.client, sale.product, sale.quantity, sale.price_total, sale.status, sale.created_at, sale.updated_at])
 
         doc = SimpleDocTemplate("sales.pdf", pagesize=letter)
         table = Table(data, colWidths=[50, 50, 50, 50, 50, 50, 50, 50, 50])
@@ -47,9 +47,9 @@ class SalesActions:
     def export(self, request, seller_id=None) -> HttpResponse:
         sales = Sale.objects.filter(seller_id=seller_id)
         if request.GET.get('format') == 'xlsx':
-            return self.export_to_xlsx(sales)
+            return self.__export_to_xlsx(sales)
         elif request.GET.get('format') == 'pdf':
-            return self.export_to_pdf(sales)
+            return self.__export_to_pdf(sales)
         else:
             return HttpResponse('Format not supported')
         
