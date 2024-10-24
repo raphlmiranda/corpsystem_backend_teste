@@ -11,6 +11,8 @@ from corpsystem_teste.app.modules.sales.models import Sale
 
 def export_to_xlsx(sales: List[Sale]) -> HttpResponse:
     df = pd.DataFrame(list(sales.values()))
+    df['created_at'] = df['created_at'].dt.strftime('%d-%m-%Y %H:%M:%S')
+    df['updated_at'] = df['updated_at'].dt.strftime('%d-%m-%Y %H:%M:%S')
     df.to_excel('sales.xlsx', index=False)
     return HttpResponse(open('sales.xlsx', 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
