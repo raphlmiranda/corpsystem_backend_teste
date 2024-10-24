@@ -45,7 +45,7 @@ def export_file(request) -> HttpResponse:
     if created_at:
         sales = sales.filter(created_at=created_at)
 
-    if format == 'pdf':
+    if extension == 'pdf':
         return export_to_pdf(sales)
     return export_to_xlsx(sales)
 
