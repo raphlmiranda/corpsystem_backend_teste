@@ -29,7 +29,7 @@ class SaleExportView(SalesActions, ListBaseView):
     filterset_fields = ["created_at", "seller", "client"]
 
     def get_queryset(self) -> List[Sale]:
-        # lookup by field
+        return Sale.objects.all()
 
 
 
