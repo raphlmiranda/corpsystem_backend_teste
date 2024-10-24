@@ -1,10 +1,7 @@
 from typing import List
 from django.http import HttpResponse
-from rest_framework.decorators import action
-from rest_framework.response import Response
 
 import pandas as pd
-from openpyxl import Workbook
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
@@ -12,7 +9,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from corpsystem_teste.app.modules.sales.models import Sale
 
 
-class SalesActions:
+class SalesExportUtils:
 
     def __export_to_xlsx(self, sales: List[Sale]) -> HttpResponse:
         df = pd.DataFrame(list(sales.values()))
@@ -56,10 +53,9 @@ class SalesActions:
         return sales
         
 
-    @action(detail=True, methods=['GET'])
     def export(self, request) -> HttpResponse:
         sales = self.__filter(request)
-        if request.GET.get('format') == 'xlsx':
+        if request..get('format') == 'xlsx':
             return self.__export_to_xlsx(sales)
         elif request.GET.get('format') == 'pdf':
             return self.__export_to_pdf(sales)

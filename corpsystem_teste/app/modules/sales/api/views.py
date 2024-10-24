@@ -1,33 +1,29 @@
 from typing import Any, List
 from rest_framework import status
-from django_filters import rest_framework
-from rest_framework.request import Request
+from django.http import HttpResponse
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import GenericViewSet
 
 from corpsystem_teste.app.mixins.viewsets import BaseView
 from corpsystem_teste.app.modules.sales.models import Sale
-from corpsystem_teste.app.modules.products.models import Product
 from corpsystem_teste.app.modules.sellers.models import Seller
 from corpsystem_teste.app.modules.clients.models import Client
+from corpsystem_teste.app.modules.products.models import Product
 
 from .serializers import (
     SaleListSerializer,
     SaleRetrieveSerializer,
     SaleCreateSerializer
 )
-from .actions import SalesActions
+from corpsystem_teste.app.modules.sales.utils.export import SalesExportUtils
 
 
-class SaleExportView(SalesActions, GenericViewSet):
+class SaleExportView(APIView):
 
-    serializer_class = SaleListSerializer
-    permission_classes = [AllowAny]
-
-    def get_queryset(self) -> List[Sale]:
-        return Sale.objects.all()
-
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        export_utils = SalesExportUtils()
+        return export_utils.export(request)
 
 
 class SalesViewSet(BaseView):
