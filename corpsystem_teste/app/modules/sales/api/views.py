@@ -18,17 +18,38 @@ from .serializers import (
     SaleRetrieveSerializer,
     SaleCreateSerializer
 )
-from corpsystem_teste.app.modules.sales.utils.export import SalesExportUtils
+from corpsystem_teste.app.modules.sales.utils.export import (
+    export_to_pdf,
+    export_to_xlsx
+)
 
 
-class SaleExportView(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class SaleExportView(APIView):
+
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        export_utils = SalesExportUtils()
-        return export_utils.export(request)
+
+        valid_formats = ['pdf', 'xlsx']
+        format = request.GET.get('format')
+        if not format or format not in valid_formats:
+            return Response({'message': 'Formato não informado'}, status=400)
+        
+        client = request.GET.get('client')
+        seller = request.GET.get('seller')
+        created_at = request.GET.get('created_at')
+
+        sales = Sale.objects.all()
+        if client:
+            sales = sales.filter(client=client)
+        if seller:
+            sales = sales.filter(seller=seller)
+        if created_at:
+            sales = sales.filter(created_at=created_at)
+
+        if format == 'pdf':
+            return export_to_pdf(sales)
+        return export_to_xlsx(sales)
 
 
 class SalesViewSet(BaseView):
