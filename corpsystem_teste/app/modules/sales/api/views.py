@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework import mixins, viewsets
 
 from corpsystem_teste.app.mixins.viewsets import BaseView
 from corpsystem_teste.app.modules.sales.models import Sale
@@ -20,7 +21,10 @@ from .serializers import (
 from corpsystem_teste.app.modules.sales.utils.export import SalesExportUtils
 
 
-class SaleExportView(APIView):
+class SaleExportView(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
         export_utils = SalesExportUtils()
