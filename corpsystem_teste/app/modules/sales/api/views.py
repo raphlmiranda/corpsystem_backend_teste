@@ -4,8 +4,9 @@ from django_filters import rest_framework
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import GenericViewSet
 
-from corpsystem_teste.app.mixins.viewsets import BaseView, ListBaseView
+from corpsystem_teste.app.mixins.viewsets import BaseView
 from corpsystem_teste.app.modules.sales.models import Sale
 from corpsystem_teste.app.modules.products.models import Product
 from corpsystem_teste.app.modules.sellers.models import Seller
@@ -19,11 +20,9 @@ from .serializers import (
 from .actions import SalesActions
 
 
-class SaleExportView(SalesActions, ListBaseView):
+class SaleExportView(SalesActions, GenericViewSet):
 
-    serializers = {
-        'default': SaleListSerializer,
-    }
+    serializer_class = SaleListSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self) -> List[Sale]:

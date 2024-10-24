@@ -63,7 +63,6 @@ class SalesActions:
             return self.__export_to_xlsx(sales)
         elif request.GET.get('format') == 'pdf':
             return self.__export_to_pdf(sales)
-        else:
-            return HttpResponse('Format not supported')
+        return HttpResponse('Format not supported')
         
         
