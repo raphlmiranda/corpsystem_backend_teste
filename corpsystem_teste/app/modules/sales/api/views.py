@@ -24,9 +24,7 @@ class SaleExportView(SalesActions, ListBaseView):
     serializers = {
         'default': SaleListSerializer,
     }
-    filter_backends = [rest_framework.DjangoFilterBackend]
     permission_classes = [AllowAny]
-    filterset_fields = ["created_at", "seller", "client"]
 
     def get_queryset(self) -> List[Sale]:
         return Sale.objects.all()

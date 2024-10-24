@@ -41,11 +41,24 @@ class SalesActions:
         table.setStyle(style)
         doc.build([table])
         return HttpResponse(open('sales.pdf', 'rb'), content_type='application/pdf')
+    
+    def __filter(self, request) -> List[Sale]:
+        client = request.GET.get('client')
+        seller = request.GET.get('seller')
+        created_at = request.GET.get('created_at')
+        sales = Sale.objects.all()
+        if client:
+            sales = sales.filter(client=client)
+        if seller:
+            sales = sales.filter(seller=seller)
+        if created_at:
+            sales = sales.filter(created_at=created_at)
+        return sales
         
 
     @action(detail=True, methods=['GET'])
-    def export(self, request, seller_id=None) -> HttpResponse:
-        sales = Sale.objects.filter(seller_id=seller_id)
+    def export(self, request) -> HttpResponse:
+        sales = self.__filter(request)
         if request.GET.get('format') == 'xlsx':
             return self.__export_to_xlsx(sales)
         elif request.GET.get('format') == 'pdf':
