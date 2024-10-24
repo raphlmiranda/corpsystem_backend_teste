@@ -27,9 +27,9 @@ from corpsystem_teste.app.modules.sales.utils.export import (
 @api_view(['GET'])
 def export_file(request) -> HttpResponse:
 
-    valid_formats = ['pdf', 'xlsx']
-    format = request.GET.get('format')
-    if not format or format not in valid_formats:
+    valid_extensions = ['pdf', 'xlsx']
+    extension = request.GET.get('extension')
+    if not extension or extension not in valid_extensions:
         return Response({'message': 'Formato não informado'}, status=400)
     
     client = request.GET.get('client')

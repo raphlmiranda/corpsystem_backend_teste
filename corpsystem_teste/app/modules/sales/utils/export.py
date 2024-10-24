@@ -9,12 +9,12 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from corpsystem_teste.app.modules.sales.models import Sale
 
 
-def export_to_xlsx(self, sales: List[Sale]) -> HttpResponse:
+def export_to_xlsx(sales: List[Sale]) -> HttpResponse:
     df = pd.DataFrame(list(sales.values()))
     df.to_excel('sales.xlsx', index=False)
     return HttpResponse(open('sales.xlsx', 'rb'), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-def export_to_pdf(self, sales: List[Sale]) -> HttpResponse:
+def export_to_pdf(sales: List[Sale]) -> HttpResponse:
     data = []
     for sale in sales:
         data.append([sale.id, sale.seller.name, sale.client, sale.product.sku, sale.quantity, sale.price_total, sale.status, sale.created_at, sale.updated_at])
