@@ -34,3 +34,31 @@ Projeto desenvolvido para mini ERP.
 * **Venda:** Validar se o cliente existe e se há quantidade disponível do produto.
 
 
+# Como executar o projeto
+
+* Buildar imagens docker
+```bash
+docker compose -f local.yml build
+```
+
+* Iniciar containers
+```bash
+docker compose -f local.yml up
+```
+
+* **Rotas Swagger**
+```bash
+http://localhost:8000/api/docs/
+```
+
+* **Rotas API**
+```bash
+http://localhost:8000/api/
+```
+
+# Testes
+
+* Executar testes
+```bash
+docker compose -f local.yml run --rm django pytest -s -v
+```

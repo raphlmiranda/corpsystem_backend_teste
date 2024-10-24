@@ -9,8 +9,6 @@ from corpsystem_teste.app.modules.products.models import Product
 
 class SaleListSerializer(serializers.ModelSerializer):
 
-    product = serializers.SlugRelatedField(read_only=True, many=True, slug_field='sku')
-
     class Meta:
         model = Sale
         fields = ('id', 'seller', 'client', 'product', 'quantity', 'price_total', 'status', 'created_at', 'updated_at')

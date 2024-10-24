@@ -1,5 +1,6 @@
 from typing import Any, List
 from rest_framework import status
+from django_filters import rest_framework
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -23,10 +24,13 @@ class SaleExportView(SalesActions, ListBaseView):
     serializers = {
         'default': SaleListSerializer,
     }
+    filter_backends = [rest_framework.DjangoFilterBackend]
+    permission_classes = [AllowAny]
     filterset_fields = ["created_at", "seller", "client"]
 
     def get_queryset(self) -> List[Sale]:
-        return Sale.objects.all()
+        # lookup by field
+
 
 
 class SalesViewSet(BaseView):

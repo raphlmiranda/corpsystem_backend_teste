@@ -22,7 +22,7 @@ class SalesActions:
     def __export_to_pdf(self, sales: List[Sale]) -> HttpResponse:
         data = []
         for sale in sales:
-            data.append([sale.id, sale.seller, sale.client, sale.product, sale.quantity, sale.price_total, sale.status, sale.created_at, sale.updated_at])
+            data.append([sale.id, sale.seller.name, sale.client, sale.product.sku, sale.quantity, sale.price_total, sale.status, sale.created_at, sale.updated_at])
 
         doc = SimpleDocTemplate("sales.pdf", pagesize=letter)
         table = Table(data, colWidths=[50, 50, 50, 50, 50, 50, 50, 50, 50])
