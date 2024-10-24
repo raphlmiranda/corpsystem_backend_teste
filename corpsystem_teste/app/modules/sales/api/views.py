@@ -1,7 +1,7 @@
 from typing import Any, List
 from rest_framework import status
 from django.http import HttpResponse
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -24,32 +24,29 @@ from corpsystem_teste.app.modules.sales.utils.export import (
 )
 
 
-class SaleExportView(APIView):
+@api_view(['GET'])
+def export_file(request) -> HttpResponse:
 
-    permission_classes = [AllowAny]
+    valid_formats = ['pdf', 'xlsx']
+    format = request.GET.get('format')
+    if not format or format not in valid_formats:
+        return Response({'message': 'Formato não informado'}, status=400)
+    
+    client = request.GET.get('client')
+    seller = request.GET.get('seller')
+    created_at = request.GET.get('created_at')
 
-    def get(self, request, *args, **kwargs) -> HttpResponse:
+    sales = Sale.objects.all()
+    if client:
+        sales = sales.filter(client=client)
+    if seller:
+        sales = sales.filter(seller=seller)
+    if created_at:
+        sales = sales.filter(created_at=created_at)
 
-        valid_formats = ['pdf', 'xlsx']
-        format = request.GET.get('format')
-        if not format or format not in valid_formats:
-            return Response({'message': 'Formato não informado'}, status=400)
-        
-        client = request.GET.get('client')
-        seller = request.GET.get('seller')
-        created_at = request.GET.get('created_at')
-
-        sales = Sale.objects.all()
-        if client:
-            sales = sales.filter(client=client)
-        if seller:
-            sales = sales.filter(seller=seller)
-        if created_at:
-            sales = sales.filter(created_at=created_at)
-
-        if format == 'pdf':
-            return export_to_pdf(sales)
-        return export_to_xlsx(sales)
+    if format == 'pdf':
+        return export_to_pdf(sales)
+    return export_to_xlsx(sales)
 
 
 class SalesViewSet(BaseView):

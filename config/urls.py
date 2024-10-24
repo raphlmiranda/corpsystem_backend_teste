@@ -5,7 +5,7 @@ from django.urls import include
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from corpsystem_teste.app.modules.sales.api.views import SaleExportView
+from corpsystem_teste.app.modules.sales.api.views import export_file
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
@@ -14,7 +14,7 @@ urlpatterns = [
 # API URLS
 urlpatterns += [
     # DRF auth token
-    path("sales/export", SaleExportView.as_view(), name="sales-export"),
+    path("sales/export", export_file, name="sales-export"),
     path("api/", include("config.api_router")),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
